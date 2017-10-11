@@ -3,7 +3,7 @@ Contributors: KaeruCT
 Donate link: https://gratipay.com/~KaeruCT/
 Tags: password, url, post, page
 Requires at least: 4.2.2
-Tested up to: 4.2.2
+Tested up to: 4.8.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
