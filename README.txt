@@ -12,6 +12,8 @@ This plugin allows passwords for password-protected pages/posts to be passed dir
 
 == Description ==
 
+This plugin allows passwords for password-protected pages/posts to be passed directly through the URL.
+
 The query string parameter that should contain the password is `pw`.
 
 For example, if the URL of your post is `http://myblog.com/password-protected-page/` and the password is `PASSWORD`,
