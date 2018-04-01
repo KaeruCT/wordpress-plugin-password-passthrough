@@ -2,7 +2,7 @@
 /*
 Plugin Name: Password URL Pass-through
 Description: This plugin allows passwords for password-protected pages/posts to be passed directly through the URL. The query string parameter that should contain the password is <strong>pw</strong>. For example, if the URL of your post is <strong>http://myblog.com/password-protected-page/</strong> and the password is <strong>PASSWORD</strong>, then just append <strong>?pw=PASSWORD</strong> to it. If the URL already contains a query string (for example, <strong>http://myblog.com/?p=5</strong>), then be sure to append <strong>&pw=PASSWORD</strong> instead.
-Version:     1.0.1
+Version:     1.1.0
 Author:      Andres Villarreal
 Author URI:  https://andres.villarreal.co.cr
 License: GPLv3 or later
@@ -28,7 +28,19 @@ defined( 'ABSPATH' ) or die();
 // plugin functionality
 add_action( 'init', function () {
     if ( isset($_GET['pw']) ) {
-        $_COOKIE['wp-postpass_' . COOKIEHASH] = wp_hash_password( $_GET['pw'] );
+        $expire = apply_filters( 'post_password_expires', time() + 10 * DAY_IN_SECONDS );
+        $referer = wp_get_referer();
+        if ( $referer ) {
+            $secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
+        } else {
+            $secure = false;
+        }
+        setcookie( 'wp-postpass_' . COOKIEHASH, wp_hash_password( $_GET['pw'] ), $expire, COOKIEPATH, COOKIE_DOMAIN, $secure );
+        
+        unset($_GET['pw']);
+        $redirect_url = home_url($wp->request) . add_query_arg( 'pw', null );
+        wp_safe_redirect( $redirect_url );
+        exit();
     }
 });
 

@@ -1,9 +1,9 @@
 === Password Passthrough ===
 Contributors: KaeruCT
-Donate link: https://gratipay.com/~KaeruCT/
-Tags: password, url, post, page
+Donate link: https://liberapay.com/KaeruCT
+Tags: password, protected, url, post, page
 Requires at least: 4.2.2
-Tested up to: 4.8.2
+Tested up to: 4.9.4
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -32,3 +32,6 @@ In order to install the plugin, please follow these steps:
 
 = 1.0 =
 * First released version.
+
+= 1.1.0 =
+* Plugin now strips the pw parameter from the URL after the respective cookie has been stored by WordPress.
