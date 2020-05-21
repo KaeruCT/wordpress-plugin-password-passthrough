@@ -3,7 +3,7 @@ Contributors: KaeruCT
 Donate link: https://liberapay.com/KaeruCT
 Tags: password, protected, url, post, page
 Requires at least: 4.2.2
-Tested up to: 4.9.4
+Tested up to: 5.4.1
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
