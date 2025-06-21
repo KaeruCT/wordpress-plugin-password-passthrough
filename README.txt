@@ -35,3 +35,7 @@ In order to install the plugin, please follow these steps:
 
 = 1.1.0 =
 * Plugin now strips the pw parameter from the URL after the respective cookie has been stored by WordPress.
+
+= 2.0.0 =
+* Updates to work with WordPress 5.4 and up to 6.8.1 - thanks to
+  @grappler !
