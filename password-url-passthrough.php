@@ -25,38 +25,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 defined( 'ABSPATH' ) or die();
 
-// plugin functionality
-add_action( 'init', function () {
-    if ( isset($_GET['pw']) ) {
-        $expire = apply_filters( 'post_password_expires', time() + 10 * DAY_IN_SECONDS );
-        $referer = wp_get_referer();
-        if ( $referer ) {
-            $secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
-        } else {
-            $secure = false;
-        }
-        setcookie( 'wp-postpass_' . COOKIEHASH, wp_hash_password( $_GET['pw'] ), $expire, COOKIEPATH, COOKIE_DOMAIN, $secure );
-        
-        unset($_GET['pw']);
-        $redirect_url = home_url($wp->request) . add_query_arg( 'pw', null );
-        wp_safe_redirect( $redirect_url );
-        exit();
+add_action( 'template_redirect', function () {
+    if ( empty( $_GET['pw'] ) ) {
+        return;
     }
-});
 
-// making documentation for administrator more readable
-add_filter('admin_head', function () {
-    print <<<HTML
-    <script type='text/javascript'>
-        jQuery(function () {
-            jQuery('#password-url-pass-through .plugin-description p').html(
-                'This plugin allows passwords for password-protected pages/posts to be passed directly through the URL. ' +
-                'The query string parameter that should contain the password is <code>pw</code>.<br><br> ' +
-                'For example, if the URL of your post is <code>http://myblog.com/password-protected-page/</code> and  ' +
-                'the password is <strong>PASSWORD</strong>, then just append <code>?pw=<strong>PASSWORD</strong></code> to it.<br><br>  ' +
-                'If the URL already contains a query string (for example, <code>http://myblog.com/?p=5</code>),  ' +
-                'then be sure to append <code>&pw=<strong>PASSWORD</strong></code> instead.');
-        });
-    </script>
-HTML;
+    $post = get_post();
+    $password = sanitize_text_field( wp_unslash( $_GET['pw'] ) );
+
+    if ( $post && $post->post_password === $password ) {
+        $expire = apply_filters( 'post_password_expires', time() + 10 * DAY_IN_SECONDS );
+        require_once ABSPATH . WPINC . '/class-phpass.php';
+        $hasher = new PasswordHash( 8, true );
+        $hashed_password = $hasher->HashPassword( wp_unslash( $password ) );
+        $secure = is_ssl();
+
+        setcookie(
+            'wp-postpass_' . COOKIEHASH,
+            $hashed_password,
+            $expire,
+            COOKIEPATH,
+            COOKIE_DOMAIN,
+            $secure
+        );
+
+        $redirect_url = remove_query_arg( 'pw' );
+        wp_safe_redirect( $redirect_url );
+        exit;
+    }
 });
